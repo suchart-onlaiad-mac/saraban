@@ -1175,7 +1175,7 @@ function go(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   $(id).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
-  const r=$('ch-retry'); if(r) r.style.display=(town&&CHS[town.ch].scr===id)?'block':'none';
+  const r=$('ch-retry'); if(r) r.style.display=(town&&Object.values(CHS).some(C=>C.scr===id))?'block':'none'; // หน้าบทใดก็ได้ — ข้อจากเกมรวมพากลับไปบทต้นทางของข้อ
   if(!keepLayers) collapseLayers(id); keepLayers=false; // กลับเข้าบทเมื่อไหร่ เริ่มที่ 🌱 เสมอ
   refreshLayerPlay(id);
 }
@@ -2067,6 +2067,7 @@ const STEPS={
 const PC={}; // แอปนี้ไม่มีลิงก์ฝึกพื้นไป percent
 
 function goStep(s){
+  if(game.mode==='challenge'&&game.hearts<=0&&!town) town={ch:curCh, lv:game.lv}; // หัวใจหมดแล้วกดย้อนไปดูขั้น (ไม่ผ่านหน้าผล) = กลับเมือง
   const [lay,,fn,to]=STEPS[s], sc0=($(s)||{closest:()=>null}).closest('.screen'), scr=sc0?sc0.id:CHS[curCh].scr; // ข้อจากเกมรวม → กลับไปบทต้นทางของข้อ
   readLayer(scr,lay); if(fn) fn();
   setTimeout(()=>{ const el=$(to||s); if(el){ el.scrollIntoView({behavior:'smooth',block:'start'}); el.classList.add('flash'); setTimeout(()=>el.classList.remove('flash'),1800); } },500);
